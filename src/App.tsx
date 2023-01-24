@@ -8,8 +8,8 @@ function App() {
   return (
     <>
       <Transactions />
-      <TopPools />
-      <TokensAvailable />
+      {/* <TopPools />
+      <TokensAvailable /> */}
     </>
   );
 }
