@@ -7,9 +7,9 @@ import "./App.css";
 function App() {
   return (
     <>
-      <Transactions />
-      {/* <TopPools />
-      <TokensAvailable /> */}
+      {/* <Transactions /> */}
+      <TopPools />
+      {/* <TokensAvailable /> */}
     </>
   );
 }

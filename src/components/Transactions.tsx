@@ -1,5 +1,5 @@
-import { FC } from "react";
-import { useQuery, gql } from "@apollo/client";
+import { FC, useEffect } from "react";
+import { useQuery } from "@apollo/client";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -12,53 +12,10 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Tooltip from "@mui/material/Tooltip";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 
 import { reduceAddress, truncate } from "../utils";
-
-const GET_TRANSACTIONS = gql`
-  {
-    transactions {
-      id
-      timestamp
-      mints {
-        origin
-        token0 {
-          name
-        }
-        token1 {
-          name
-        }
-        amount0
-        amount1
-        amountUSD
-      }
-      burns {
-        origin
-        token0 {
-          name
-        }
-        token1 {
-          name
-        }
-        amount0
-        amount1
-        amountUSD
-      }
-      swaps {
-        origin
-        token0 {
-          name
-        }
-        token1 {
-          name
-        }
-        amount0
-        amount1
-        amountUSD
-      }
-    }
-  }
-`;
+import { GET_TRANSACTIONS } from "../dataModels";
 
 const headerTitles: string[] = [
   "Tx Hash",
@@ -95,7 +52,7 @@ const ReducedCellData: FC<ReducedCellProps> = ({ value, size }) => {
   );
 };
 
-const ActionRow: FC<TransactionData> = ({ timestamp, burns, mints, swaps }) => {
+const TxRow: FC<TransactionData> = ({ timestamp, burns, mints, swaps }) => {
   let actionDescription: string = "";
   let action = null;
   if (burns.length > 0) {
@@ -135,17 +92,34 @@ const ActionRow: FC<TransactionData> = ({ timestamp, burns, mints, swaps }) => {
   );
 };
 
+// https://info.uniswap.org/#/
 const Transactions = () => {
   const { loading, error, data } = useQuery(GET_TRANSACTIONS);
-  console.log("[Transactions]:", data);
+
+  //   console.log("[Transactions]:", data);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
 
+  const handleReload = () => {
+    console.log("reloading data...");
+  };
+
   return (
     <>
       <Container>
-        <TableContainer component={Paper} sx={{ margin: "3rem" }}>
+        <Box
+          sx={{ marginTop: "2rem", marginBottom: "-2rem" }}
+          textAlign={"center"}
+        >
+          <Button variant="contained" onClick={handleReload}>
+            Reload data
+          </Button>
+        </Box>
+        <TableContainer
+          component={Paper}
+          sx={{ margin: "3rem", marginLeft: 0 }}
+        >
           <Table size="medium" aria-label="a dense table">
             <TableHead>
               <TableRow>
@@ -167,7 +141,7 @@ const Transactions = () => {
                       {reduceAddress(tx.id)}
                     </Link>
                   </TableCell>
-                  <ActionRow
+                  <TxRow
                     id={tx.id}
                     timestamp={tx.timestamp}
                     burns={tx.burns}
