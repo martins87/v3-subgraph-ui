@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { useQuery } from "@apollo/client";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -11,22 +11,19 @@ import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Tooltip from "@mui/material/Tooltip";
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
 
-import { reduceAddress, truncate } from "../utils";
+import { reduceAddress, truncate, timeDiff } from "../utils";
 import { GET_TRANSACTIONS } from "../dataModels";
 
 const headerTitles: string[] = [
   "Tx Hash",
-  "Timestamp",
-  "From",
+  "Account",
   "Total Value",
-  "Action",
-  "Token 0",
-  "Amount",
-  "Token 1",
-  "Amount",
+  "Token Amount",
+  "Token Amount",
+  "Time",
 ];
 
 export type TransactionData = {
@@ -46,53 +43,66 @@ const ReducedCellData: FC<ReducedCellProps> = ({ value, size }) => {
   return (
     <TableCell>
       <Tooltip title={value} placement="top">
-        <Box>{truncate(value, size)}</Box>
+        <Typography color="#606060">{truncate(value, size)}</Typography>
       </Tooltip>
     </TableCell>
   );
 };
 
-const TxRow: FC<TransactionData> = ({ timestamp, burns, mints, swaps }) => {
-  let actionDescription: string = "";
-  let action = null;
+const TxRow: FC<TransactionData> = ({ id, timestamp, burns, mints, swaps }) => {
+  let actionArray = null;
+  let action: string = "";
+  let conjunction: string = "and";
   if (burns.length > 0) {
-    action = burns;
-    actionDescription = "Burn";
+    actionArray = burns;
+    action = "Burn";
   } else if (swaps.length > 0) {
-    action = swaps;
-    actionDescription = "Swap";
+    actionArray = swaps;
+    action = "Swap";
+    conjunction = "for";
   } else if (mints.length > 0) {
-    action = mints;
-    actionDescription = "Mint";
+    actionArray = mints;
+    action = "Mint";
   }
-  let fromAddress: string = action[0].origin;
-  let totalValue: string = action[0].amountUSD;
-  let token0: string = action[0].token0.name;
-  let token1: string = action[0].token1.name;
-  let amount0: string = action[0].amount0;
-  let amount1: string = action[0].amount1;
+  let fromAddress: string = actionArray[0].origin;
+  let totalValue: string = actionArray[0].amountUSD;
+  let token0: string = actionArray[0].token0.symbol;
+  let token1: string = actionArray[0].token1.symbol;
+  let amount0: string = actionArray[0].amount0;
+  let amount1: string = actionArray[0].amount1;
 
   //   console.log("action:", action);
 
   return (
     <>
-      <TableCell>{timestamp}</TableCell>
-      <TableCell>
-        <Link href={"https://etherscan.io/tx/" + fromAddress}>
-          {reduceAddress(fromAddress)}
+      <TableCell component="th" scope="row">
+        <Link href={"https://etherscan.io/tx/" + id} underline="none">
+          <Typography color="rgb(252, 7, 125)">
+            {`${action} ${token0} ${conjunction} ${token1}`}
+          </Typography>
         </Link>
       </TableCell>
-      <TableCell>${(+totalValue).toFixed(2)}</TableCell>
-      <TableCell>{actionDescription}</TableCell>
-      <ReducedCellData value={token0} size={14} />
-      <ReducedCellData value={amount0} size={10} />
-      <ReducedCellData value={token1} size={14} />
-      <ReducedCellData value={amount1} size={10} />
+      <TableCell>
+        <Link href={"https://etherscan.io/tx/" + fromAddress} underline="none">
+          <Typography color="rgb(252, 7, 125)">
+            {reduceAddress(fromAddress)}
+          </Typography>
+        </Link>
+      </TableCell>
+      <TableCell>
+        <Typography color="#606060">${(+totalValue).toFixed(2)}</Typography>
+      </TableCell>
+      <ReducedCellData value={token0 + " " + amount0} size={14} />
+      <ReducedCellData value={token1 + " " + amount1} size={14} />
+      <TableCell>
+        <Typography color="#606060">
+          {timeDiff(new Date(), timestamp)}
+        </Typography>
+      </TableCell>
     </>
   );
 };
 
-// https://info.uniswap.org/#/
 const Transactions = () => {
   const { loading, error, data } = useQuery(GET_TRANSACTIONS);
 
@@ -108,39 +118,58 @@ const Transactions = () => {
   return (
     <>
       <Container>
-        <Box
-          sx={{ marginTop: "2rem", marginBottom: "-2rem" }}
-          textAlign={"center"}
-        >
-          <Button variant="contained" onClick={handleReload}>
-            Reload data
-          </Button>
-        </Box>
+        <Grid container sx={{ marginTop: "2rem", marginBottom: "-2.5rem" }}>
+          <Grid item sx={{ flex: 1 }}>
+            <Typography fontWeight="bold" color="#606060">
+              Transactions
+            </Typography>
+          </Grid>
+          <Grid item>
+            <Button
+              variant="contained"
+              onClick={handleReload}
+              sx={{
+                background: "#E8E8E8",
+                color: "#000",
+                fontWeight: "bold",
+                textTransform: "none",
+                "&:hover": {
+                  background: "#000",
+                  color: "#E8E8E8",
+                },
+              }}
+            >
+              Reload data
+            </Button>
+          </Grid>
+        </Grid>
         <TableContainer
           component={Paper}
-          sx={{ margin: "3rem", marginLeft: 0 }}
+          sx={{
+            margin: "3rem",
+            marginLeft: 0,
+            background: "#E8E8E8",
+            borderRadius: "1rem",
+          }}
         >
           <Table size="medium" aria-label="a dense table">
             <TableHead>
               <TableRow>
                 {headerTitles.map((title: string, index: number) => (
                   <TableCell key={title + index}>
-                    <Typography variant="h6">{title}</Typography>
+                    <Typography fontWeight="bold" color="#606060">
+                      {title}
+                    </Typography>
                   </TableCell>
                 ))}
               </TableRow>
             </TableHead>
-            <TableBody>
+            <TableBody sx={{ backgroundColor: "#E8E8E8" }}>
               {data.transactions.map((tx: TransactionData) => (
                 <TableRow
                   key={tx.id}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
-                  <TableCell component="th" scope="row">
-                    <Link href={"https://etherscan.io/tx/" + tx.id}>
-                      {reduceAddress(tx.id)}
-                    </Link>
-                  </TableCell>
                   <TxRow
                     id={tx.id}
                     timestamp={tx.timestamp}

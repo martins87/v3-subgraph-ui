@@ -2,7 +2,6 @@ import { useQuery, gql } from "@apollo/client";
 
 import { GET_TOKENS_AVAILABLE } from "../dataModels";
 
-// https://info.uniswap.org/#/tokens
 const TokensAvailable = () => {
   const { loading, error, data } = useQuery(GET_TOKENS_AVAILABLE);
   console.log("[TokensAvailable]:", data);

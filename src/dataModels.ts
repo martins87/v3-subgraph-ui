@@ -8,9 +8,11 @@ export const GET_TRANSACTIONS = gql`
       mints {
         origin
         token0 {
+          symbol
           name
         }
         token1 {
+          symbol
           name
         }
         amount0
@@ -20,9 +22,11 @@ export const GET_TRANSACTIONS = gql`
       burns {
         origin
         token0 {
+          symbol
           name
         }
         token1 {
+          symbol
           name
         }
         amount0
@@ -32,9 +36,11 @@ export const GET_TRANSACTIONS = gql`
       swaps {
         origin
         token0 {
+          symbol
           name
         }
         token1 {
+          symbol
           name
         }
         amount0

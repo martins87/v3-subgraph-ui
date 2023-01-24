@@ -9,8 +9,8 @@ import Paper from "@mui/material/Paper";
 import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
 
 import { GET_TOP_POOLS } from "../dataModels";
 
@@ -42,48 +42,79 @@ const TopPools = () => {
   return (
     <>
       <Container>
-        <Box
-          sx={{ marginTop: "2rem", marginBottom: "-2rem" }}
-          textAlign={"center"}
-        >
-          <Button variant="contained" onClick={handleReload}>
-            Reload data
-          </Button>
-        </Box>
+        <Grid container sx={{ marginTop: "2rem", marginBottom: "-2.5rem" }}>
+          <Grid item sx={{ flex: 1 }}>
+            <Typography fontWeight="bold" color="#606060">
+              Top Pools
+            </Typography>
+          </Grid>
+          <Grid item>
+            <Button
+              variant="contained"
+              onClick={handleReload}
+              sx={{
+                background: "#E8E8E8",
+                color: "#000",
+                fontWeight: "bold",
+                textTransform: "none",
+                "&:hover": {
+                  background: "#000",
+                  color: "#E8E8E8",
+                },
+              }}
+            >
+              Reload data
+            </Button>
+          </Grid>
+        </Grid>
         <TableContainer
           component={Paper}
-          sx={{ margin: "3rem", marginLeft: 0 }}
+          sx={{
+            margin: "3rem",
+            marginLeft: 0,
+            background: "#E8E8E8",
+            borderRadius: "1rem",
+          }}
         >
           <Table size="medium" aria-label="a dense table">
             <TableHead>
               <TableRow>
                 {headerTitles.map((title: string, index: number) => (
                   <TableCell key={title + index}>
-                    <Typography variant="h6">{title}</Typography>
+                    <Typography fontWeight="bold" color="#606060">
+                      {title}
+                    </Typography>
                   </TableCell>
                 ))}
               </TableRow>
             </TableHead>
-            <TableBody>
+            <TableBody sx={{ backgroundColor: "#E8E8E8" }}>
               {data.pools.map((pool: PoolData) => (
                 <TableRow
                   key={pool.id}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  sx={{
+                    "&:last-child td, &:last-child th": { border: 0 },
+                  }}
                 >
                   <TableCell component="th" scope="row">
                     <Link
                       href={"https://info.uniswap.org/#/pools/" + pool.id}
+                      underline="none"
                       target="_blank"
                       rel="noopener"
                     >
-                      {pool.token0.symbol}/{pool.token1.symbol}
+                      <Typography color="rgb(252, 7, 125)">
+                        {pool.token0.symbol}/{pool.token1.symbol}
+                      </Typography>
                     </Link>
                   </TableCell>
                   <TableCell component="th" scope="row">
-                    {+pool.totalValueLockedUSD}
+                    <Typography color="#606060">
+                      {+pool.totalValueLockedUSD}
+                    </Typography>
                   </TableCell>
                   <TableCell component="th" scope="row">
-                    ?
+                    <Typography color="#606060">?</Typography>
                   </TableCell>
                 </TableRow>
               ))}
