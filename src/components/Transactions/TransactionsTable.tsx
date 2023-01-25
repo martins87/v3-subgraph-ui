@@ -1,5 +1,4 @@
 import { FC } from "react";
-
 import Container from "@mui/material/Container";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -24,11 +23,11 @@ import { TransactionData } from "../../dataModels";
 import V3Button from "../Button";
 
 const headerTitles: string[] = [
-  "Name",
-  "Price",
-  "Price Change",
-  "Volume 24H",
-  "TVL",
+  "Action",
+  "Account",
+  "Total Value",
+  "Token Amount",
+  "Token Amount",
   "Time",
 ];
 

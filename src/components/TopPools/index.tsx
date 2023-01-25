@@ -9,12 +9,12 @@ import Paper from "@mui/material/Paper";
 import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 
 import { GET_TOP_POOLS } from "../../queries";
 import { PoolData } from "../../dataModels";
 import { formatUSD, timeDiff } from "../../utils";
+import V3Button from "../Button";
 
 const headerTitles: string[] = ["Pool", "TVL", "Volume 24H", "Time"];
 
@@ -36,22 +36,7 @@ const TopPools = () => {
             </Typography>
           </Grid>
           <Grid item>
-            <Button
-              variant="contained"
-              onClick={handleReload}
-              sx={{
-                background: "#E8E8E8",
-                color: "#000",
-                fontWeight: "bold",
-                textTransform: "none",
-                "&:hover": {
-                  background: "#000",
-                  color: "#E8E8E8",
-                },
-              }}
-            >
-              Reload data
-            </Button>
+            <V3Button handleClick={handleReload} />
           </Grid>
         </Grid>
         <TableContainer

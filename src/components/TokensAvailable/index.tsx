@@ -1,10 +1,5 @@
 import { useState } from "react";
 import { useQuery } from "@apollo/client";
-import IconButton from "@mui/material/IconButton";
-import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
 
 import { GET_TOKENS_AVAILABLE } from "../../queries";
 import TokensTable from "./TokensTable";
