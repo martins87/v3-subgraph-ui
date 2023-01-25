@@ -1,101 +1,27 @@
-import { FC } from "react";
+import { useState } from "react";
 import { useQuery } from "@apollo/client";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import Link from "@mui/material/Link";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
-import Tooltip from "@mui/material/Tooltip";
-import Button from "@mui/material/Button";
-import Grid from "@mui/material/Grid";
 
-import { reduceAddress, truncate, timeDiff } from "../../utils";
 import { GET_TRANSACTIONS } from "../../queries";
-import { TransactionData } from "../../dataModels";
-
-const headerTitles: string[] = [
-  "Tx Hash",
-  "Account",
-  "Total Value",
-  "Token Amount",
-  "Token Amount",
-  "Time",
-];
-
-export type ReducedCellProps = {
-  value: string;
-  size: number;
-};
-
-const ReducedCellData: FC<ReducedCellProps> = ({ value, size }) => {
-  return (
-    <TableCell>
-      <Tooltip title={value} placement="top">
-        <Typography color="#606060">{truncate(value, size)}</Typography>
-      </Tooltip>
-    </TableCell>
-  );
-};
-
-const TxRow: FC<TransactionData> = ({ id, timestamp, burns, mints, swaps }) => {
-  let actionArray = null;
-  let action: string = "";
-  let conjunction: string = "and";
-  if (burns.length > 0) {
-    actionArray = burns;
-    action = "Burn";
-  } else if (swaps.length > 0) {
-    actionArray = swaps;
-    action = "Swap";
-    conjunction = "for";
-  } else if (mints.length > 0) {
-    actionArray = mints;
-    action = "Mint";
-  }
-  let fromAddress: string = actionArray[0].origin;
-  let totalValue: string = actionArray[0].amountUSD;
-  let token0: string = actionArray[0].token0.symbol;
-  let token1: string = actionArray[0].token1.symbol;
-  let amount0: string = actionArray[0].amount0;
-  let amount1: string = actionArray[0].amount1;
-
-  return (
-    <>
-      <TableCell component="th" scope="row">
-        <Link href={"https://etherscan.io/tx/" + id} underline="none">
-          <Typography color="rgb(252, 7, 125)">
-            {`${action} ${token0} ${conjunction} ${token1}`}
-          </Typography>
-        </Link>
-      </TableCell>
-      <TableCell>
-        <Link href={"https://etherscan.io/tx/" + fromAddress} underline="none">
-          <Typography color="rgb(252, 7, 125)">
-            {reduceAddress(fromAddress)}
-          </Typography>
-        </Link>
-      </TableCell>
-      <TableCell>
-        <Typography color="#606060">${(+totalValue).toFixed(2)}</Typography>
-      </TableCell>
-      <ReducedCellData value={token0 + " " + amount0} size={14} />
-      <ReducedCellData value={token1 + " " + amount1} size={14} />
-      <TableCell>
-        <Typography color="#606060">
-          {timeDiff(new Date(), timestamp)}
-        </Typography>
-      </TableCell>
-    </>
-  );
-};
+import TransactionsTable from "./TransactionsTable";
+import Pagination from "../Table/Pagination";
 
 const Transactions = () => {
   const { loading, error, data } = useQuery(GET_TRANSACTIONS);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, _] = useState(10);
+
+  const indexOfLastRow = currentPage * rowsPerPage;
+  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
+
+  const paginate = (pageNumber: number) => {
+    let nextPage: number =
+      pageNumber < 1
+        ? 1
+        : pageNumber > Math.ceil(data.transactions.length / rowsPerPage)
+        ? Math.ceil(data.transactions.length / rowsPerPage)
+        : pageNumber;
+    setCurrentPage(nextPage);
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
@@ -104,72 +30,16 @@ const Transactions = () => {
 
   return (
     <>
-      <Container>
-        <Grid container sx={{ marginTop: "2rem", marginBottom: "-2.5rem" }}>
-          <Grid item sx={{ flex: 1 }}>
-            <Typography fontWeight="bold" color="#606060">
-              Transactions
-            </Typography>
-          </Grid>
-          <Grid item>
-            <Button
-              variant="contained"
-              onClick={handleReload}
-              sx={{
-                background: "#E8E8E8",
-                color: "#000",
-                fontWeight: "bold",
-                textTransform: "none",
-                "&:hover": {
-                  background: "#000",
-                  color: "#E8E8E8",
-                },
-              }}
-            >
-              Reload data
-            </Button>
-          </Grid>
-        </Grid>
-        <TableContainer
-          component={Paper}
-          sx={{
-            margin: "3rem",
-            marginLeft: 0,
-            background: "#E8E8E8",
-            borderRadius: "1rem",
-          }}
-        >
-          <Table size="medium" aria-label="a dense table">
-            <TableHead>
-              <TableRow>
-                {headerTitles.map((title: string, index: number) => (
-                  <TableCell key={title + index}>
-                    <Typography fontWeight="bold" color="#606060">
-                      {title}
-                    </Typography>
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody sx={{ backgroundColor: "#E8E8E8" }}>
-              {data.transactions.map((tx: TransactionData) => (
-                <TableRow
-                  key={tx.id}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TxRow
-                    id={tx.id}
-                    timestamp={tx.timestamp}
-                    burns={tx.burns}
-                    mints={tx.mints}
-                    swaps={tx.swaps}
-                  />
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Container>
+      <TransactionsTable
+        transactions={data.transactions.slice(indexOfFirstRow, indexOfLastRow)}
+      />
+
+      <Pagination
+        paginate={paginate}
+        totalRows={data.transactions.length}
+        currentPage={currentPage}
+        rowsPerPage={rowsPerPage}
+      />
     </>
   );
 };

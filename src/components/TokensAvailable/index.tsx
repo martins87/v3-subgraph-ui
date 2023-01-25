@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { useQuery } from "@apollo/client";
 import IconButton from "@mui/material/IconButton";
-import Grid from "@mui/material/Grid";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 
 import { GET_TOKENS_AVAILABLE } from "../../queries";
 import TokensTable from "./TokensTable";
+import Pagination from "../Table/Pagination";
 
 const TokensAvailable = () => {
   const { loading, error, data } = useQuery(GET_TOKENS_AVAILABLE);
@@ -36,28 +37,12 @@ const TokensAvailable = () => {
         tokens={data.tokens.slice(indexOfFirstRow, indexOfLastRow)}
       />
 
-      <Grid container alignItems="center" justifyContent="center" spacing={1}>
-        <Grid>
-          <IconButton onClick={() => paginate(currentPage - 1)}>
-            <ArrowBackIosIcon />
-          </IconButton>
-        </Grid>
-        <Grid>
-          <Typography
-            sx={{
-              display: "grid",
-              alignItems: "center",
-            }}
-            color="#606060"
-          >
-            Page {currentPage} of {Math.ceil(data.tokens.length / rowsPerPage)}
-          </Typography>
-        </Grid>
-        <Grid></Grid>
-        <IconButton onClick={() => paginate(currentPage + 1)}>
-          <ArrowForwardIosIcon />
-        </IconButton>
-      </Grid>
+      <Pagination
+        paginate={paginate}
+        totalRows={data.tokens.length}
+        currentPage={currentPage}
+        rowsPerPage={rowsPerPage}
+      />
     </>
   );
 };

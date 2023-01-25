@@ -1,16 +1,15 @@
 import Transactions from "./components/Transactions";
 import TopPools from "./components/TopPools";
 import TokensAvailable from "./components/TokensAvailable";
-import "./App.css";
 
-function App() {
+const App = () => {
   return (
     <>
-      {/* <Transactions />
-      <TopPools /> */}
       <TokensAvailable />
+      <Transactions />
+      <TopPools />
     </>
   );
-}
+};
 
 export default App;
