@@ -12,6 +12,7 @@
 
 - JS Framework: [React](https://github.com/facebook/react) + [Typescript](https://github.com/microsoft/TypeScript)
 - Styling: [Material UI](https://mui.com/)
+- GraphQL data fetching: [Apollo Client](https://www.apollographql.com/)
 
 ## Install
 

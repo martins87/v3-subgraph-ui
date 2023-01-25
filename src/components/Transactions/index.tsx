@@ -14,9 +14,9 @@ import Tooltip from "@mui/material/Tooltip";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 
-import { reduceAddress, truncate, timeDiff } from "../utils";
-import { GET_TRANSACTIONS } from "../queries";
-import { TransactionData } from "../dataModels";
+import { reduceAddress, truncate, timeDiff } from "../../utils";
+import { GET_TRANSACTIONS } from "../../queries";
+import { TransactionData } from "../../dataModels";
 
 const headerTitles: string[] = [
   "Tx Hash",
@@ -64,8 +64,6 @@ const TxRow: FC<TransactionData> = ({ id, timestamp, burns, mints, swaps }) => {
   let amount0: string = actionArray[0].amount0;
   let amount1: string = actionArray[0].amount1;
 
-  //   console.log("action:", action);
-
   return (
     <>
       <TableCell component="th" scope="row">
@@ -99,14 +97,10 @@ const TxRow: FC<TransactionData> = ({ id, timestamp, burns, mints, swaps }) => {
 const Transactions = () => {
   const { loading, error, data } = useQuery(GET_TRANSACTIONS);
 
-  //   console.log("[Transactions]:", data);
-
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
 
-  const handleReload = () => {
-    console.log("reloading data...");
-  };
+  const handleReload = () => console.log("reloading data...");
 
   return (
     <>

@@ -12,23 +12,19 @@ import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 
-import { GET_TOP_POOLS } from "../queries";
-import { PoolData } from "../dataModels";
-import { formatUSD, timeDiff } from "../utils";
+import { GET_TOP_POOLS } from "../../queries";
+import { PoolData } from "../../dataModels";
+import { formatUSD, timeDiff } from "../../utils";
 
 const headerTitles: string[] = ["Pool", "TVL", "Volume 24H", "Time"];
 
 const TopPools = () => {
   const { loading, error, data } = useQuery(GET_TOP_POOLS);
 
-  // console.log("[Pools]:", data);
-
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
 
-  const handleReload = () => {
-    console.log("reloading data...");
-  };
+  const handleReload = () => console.log("reloading data...");
 
   return (
     <>
