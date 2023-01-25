@@ -2,11 +2,11 @@ export const reduceAddress = (address: string): string => {
   return address.slice(0, 6) + "..." + address.slice(-3);
 };
 
-export const truncate = (str: string, n: number) => {
+export const truncate = (str: string, n: number): string => {
   return str.length > n ? str.slice(0, n - 1) + "..." : str;
 };
 
-export const timeDiff = (curr: any, prev: any) => {
+export const timeDiff = (curr: any, prev: any): string => {
   var ms_Min = 60 * 1000; // milliseconds in Minute
   var ms_Hour = ms_Min * 60; // milliseconds in Hour
   var ms_Day = ms_Hour * 24; // milliseconds in day
@@ -36,4 +36,28 @@ export const timeDiff = (curr: any, prev: any) => {
   } else {
     return Math.round(diff / ms_Yr) + ' years ago';
   }
-}
+};
+
+export const formatUSD = (p: number): string => {
+  let price = p;
+  if (price < 1000) return "$" + price.toFixed(2);
+
+  price = Math.round(p);
+  let trillions: number = Math.round(price/1000000000000);
+  let billions: number = Math.round(price/1000000000);
+  let millions: number = Math.round(price/1000000);
+  let thousands: number = Math.round(price/1000);
+  let hundreds: number = Math.round(price%1000);
+
+  return trillions > 0 ?
+    "$" + trillions + "." + billions.toString().slice(-2) + "t" :
+    billions > 0 ?
+    "$" + billions + "." + millions.toString().slice(-2) + "b" :
+    millions > 0 ?
+    "$" + millions + "." + thousands.toString().slice(-2) + "m" :
+    "$" + thousands + "." + hundreds.toString().slice(-2) + "k";
+};
+
+export const priceChange = (newPrice: number, oldPrice: number): string => {
+  return ((newPrice - oldPrice) / oldPrice * 100).toFixed(2) + "%";
+};

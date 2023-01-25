@@ -9,7 +9,7 @@ function App() {
     <>
       <Transactions />
       <TopPools />
-      {/* <TokensAvailable /> */}
+      <TokensAvailable />
     </>
   );
 }

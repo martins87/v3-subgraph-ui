@@ -12,20 +12,11 @@ import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 
-import { GET_TOP_POOLS } from "../dataModels";
+import { GET_TOP_POOLS } from "../queries";
+import { PoolData } from "../dataModels";
+import { formatUSD } from "../utils";
 
 const headerTitles: string[] = ["Pool", "TVL", "Volume 24H"];
-
-type TokenSymbol = {
-  symbol: string;
-};
-
-type PoolData = {
-  id: string;
-  totalValueLockedUSD: string;
-  token0: TokenSymbol;
-  token1: TokenSymbol;
-};
 
 const TopPools = () => {
   const { loading, error, data } = useQuery(GET_TOP_POOLS);
@@ -110,7 +101,7 @@ const TopPools = () => {
                   </TableCell>
                   <TableCell component="th" scope="row">
                     <Typography color="#606060">
-                      {+pool.totalValueLockedUSD}
+                      {formatUSD(+pool.totalValueLockedUSD)}
                     </Typography>
                   </TableCell>
                   <TableCell component="th" scope="row">

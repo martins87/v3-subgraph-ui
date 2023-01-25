@@ -15,7 +15,8 @@ import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 
 import { reduceAddress, truncate, timeDiff } from "../utils";
-import { GET_TRANSACTIONS } from "../dataModels";
+import { GET_TRANSACTIONS } from "../queries";
+import { TransactionData } from "../dataModels";
 
 const headerTitles: string[] = [
   "Tx Hash",
@@ -25,14 +26,6 @@ const headerTitles: string[] = [
   "Token Amount",
   "Time",
 ];
-
-export type TransactionData = {
-  id: string;
-  timestamp: string;
-  burns: any;
-  mints: any;
-  swaps: any;
-};
 
 export type ReducedCellProps = {
   value: string;
