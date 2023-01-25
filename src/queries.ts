@@ -58,6 +58,10 @@ export const GET_TOP_POOLS = gql`
     totalValueLockedUSD
     token0 { symbol }
     token1 { symbol }
+    poolDayData (orderBy: date, orderDirection: desc, first: 1) {
+      date
+      volumeUSD
+    }
   }
 }
 `;

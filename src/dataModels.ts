@@ -22,11 +22,17 @@ type TokenSymbol = {
   symbol: string;
 };
 
+type PoolDayData = {
+  date: number;
+  volumeUSD: string;
+};
+
 export type PoolData = {
   id: string;
   totalValueLockedUSD: string;
   token0: TokenSymbol;
   token1: TokenSymbol;
+  poolDayData: PoolDayData[];
 };
 
 export type TransactionData = {

@@ -14,9 +14,9 @@ import Grid from "@mui/material/Grid";
 
 import { GET_TOP_POOLS } from "../queries";
 import { PoolData } from "../dataModels";
-import { formatUSD } from "../utils";
+import { formatUSD, timeDiff } from "../utils";
 
-const headerTitles: string[] = ["Pool", "TVL", "Volume 24H"];
+const headerTitles: string[] = ["Pool", "TVL", "Volume 24H", "Time"];
 
 const TopPools = () => {
   const { loading, error, data } = useQuery(GET_TOP_POOLS);
@@ -105,7 +105,14 @@ const TopPools = () => {
                     </Typography>
                   </TableCell>
                   <TableCell component="th" scope="row">
-                    <Typography color="#606060">?</Typography>
+                    <Typography color="#606060">
+                      {formatUSD(+pool.poolDayData[0].volumeUSD)}
+                    </Typography>
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    <Typography color="#606060">
+                      {timeDiff(new Date(), +pool.poolDayData[0].date)}
+                    </Typography>
                   </TableCell>
                 </TableRow>
               ))}
